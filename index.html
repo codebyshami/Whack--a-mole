@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=New+Tegomin&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Whack a Mole</title>
+  </head>
+  <body>
+    <div class="game-header">
+      <h1>ScoreBoard</h1>
+      <p class="score"><strong>0</strong></p>
+    </div>
+    <button onclick="startGame()">Start Game</button><br /><br />
+    <h1 class="timesUp"></h1>
+    <br />
+    <div class="game-body">
+      <div class="hole hole1">
+        <div class="mole"></div>
+      </div>
+      <div class="hole hole2">
+        <div class="mole"></div>
+      </div>
+      <div class="hole hole3">
+        <div class="mole"></div>
+      </div>
+      <div class="hole hole4">
+        <div class="mole"></div>
+      </div>
+      <div class="hole hole5">
+        <div class="mole"></div>
+      </div>
+      <div class="hole hole6">
+        <div class="mole"></div>
+      </div>
+    </div>
+    <script>
+      const holes = document.querySelectorAll(".hole");
+      const moles = document.querySelectorAll(".mole");
+      const socreBoard = document.querySelector(".score");
+      const timesUpShow = document.querySelector(".timesUp");
+      let lastHole;
+      let timeUp;
+      let score;
+      function randTime(min, max) {
+        return Math.floor(Math.random() * (max - min) + min);
+      }
+      function randomHole(holes) {
+        const id = Math.floor(Math.random() * holes.length);
+        const hole = holes[id];
+        if (hole === lastHole) {
+          return randomHole(holes);
+        }
+        lastHole = hole;
+        return hole;
+      }
+      function peep() {
+        const time = randTime(200, 1000);
+        const hole = randomHole(holes);
+        hole.classList.add("up");
+        setTimeout(() => {
+          if (!timeUp) peep();
+          hole.classList.remove("up");
+        }, time);
+      }
+      function CheckClick(e) {
+        if (!e.isTrusted) return;
+        score++;
+        this.classList.remove("up");
+        socreBoard.textContent = score;
+      }
+      moles.forEach((mole) => mole.addEventListener("click", CheckClick));
+
+      function startGame() {
+        score = 0;
+        timeUp = false;
+        timesUpShow.textContent = "You have 10 seconds";
+        peep();
+        setTimeout(() => {
+          timesUpShow.style.color = "red";
+          timesUpShow.textContent = "Times UP";
+          timeUp = true;
+        }, 10000);
+      }
+    </script>
+  </body>
+</html>
